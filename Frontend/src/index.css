@@ -1,0 +1,71 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Global Class-Based Dark Mode Theme Overrides */
+.dark .bg-white {
+  background-color: #1e293b !important; /* slate-800 */
+}
+.dark .bg-slate-50 {
+  background-color: #0f172a !important; /* slate-900 */
+}
+.dark .bg-slate-50\/50 {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+}
+.dark .bg-slate-50\/40 {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+}
+
+.dark .text-slate-900 {
+  color: #f8fafc !important; /* slate-50 */
+}
+.dark .text-slate-800 {
+  color: #f1f5f9 !important; /* slate-100 */
+}
+.dark .text-slate-700 {
+  color: #e2e8f0 !important; /* slate-200 */
+}
+.dark .text-slate-600 {
+  color: #cbd5e1 !important; /* slate-300 */
+}
+.dark .text-slate-500 {
+  color: #94a3b8 !important; /* slate-400 */
+}
+
+.dark .border-slate-100 {
+  border-color: #334155 !important; /* slate-700 */
+}
+.dark .border-slate-200 {
+  border-color: #334155 !important;
+  --tw-border-opacity: 1 !important;
+}
+.dark .border-slate-300 {
+  border-color: #475569 !important; /* slate-600 */
+}
+
+.dark .ring-slate-100 {
+  --tw-ring-color: #334155 !important;
+}
+.dark .ring-slate-200 {
+  --tw-ring-color: #475569 !important;
+}dark :not([class*="dark:border-"]).border-slate-100 {
+  border-color: #334155 !important;
+}
+.dark :not([class*="dark:border-"]).border-slate-200 {
+  border-color: #334155 !important;
+}
+.dark :not([class*="dark:border-"]).border-slate-300 {
+  border-color: #475569 !important;
+}
+
+.dark :not([class*="dark:ring-"]).ring-slate-100 {
+  --tw-ring-color: #334155 !important;
+}
+.dark :not([class*="dark:ring-"]).ring-slate-200 {
+  --tw-ring-color: #475569 !important;
+}
+
+/* Force explicit text-white to remain pure white under dark theme (e.g. on green buttons) */
+.dark .text-white {
+  color: #ffffff !important;
+}

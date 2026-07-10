@@ -1,0 +1,58 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Build directories
+dist/
+build/
+.next/
+out/
+
+# Cache
+.cache/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Backend specific (Express)
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# Frontend specific (React)
+.eslintcache
+*.css.map
+*.js.map
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Debug
+debug/
+*.pid
+
+# Optional (if using)
+.serverless/
+.jest/
