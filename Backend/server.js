@@ -14,7 +14,8 @@ const Doctor = require('./models/Doctor');
 
 
 const coreOptions = {
-  origin: 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || process.env.FRONTEND_ORIGIN || "http://localhost:5173",
+  credentials: true,
   optionsSuccessStatus: 200
 }
 
