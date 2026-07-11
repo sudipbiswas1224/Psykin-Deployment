@@ -28,7 +28,8 @@ const sendEmail = async (options) => {
     auth: {
       user: EMAIL_USER,
       pass: EMAIL_PASS
-    }
+    },
+    family: 4 // Use IPv4 to avoid potential IPv6 issues
   });
 
   // 2) Define the mail configuration
