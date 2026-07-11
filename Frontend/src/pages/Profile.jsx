@@ -61,7 +61,7 @@ const Profile = () => {
   });
 
   const [prefForm, setPrefForm] = useState({
-    theme: "auto",
+    theme: "dark",
     language: "en",
   });
 
@@ -101,7 +101,7 @@ const Profile = () => {
             timezone: u.profile.timezone || "UTC",
           });
           setPrefForm({
-            theme: u.preferences.theme || "auto",
+            theme: u.preferences.theme || "dark",
             language: u.preferences.language || "en",
           });
           setStats({

@@ -32,7 +32,7 @@ const seedResources = async () => {
                 description: "NIMH self-care guidance covering sleep, relaxation, healthy routines, and recovery support.",
                 url: "https://www.nimh.nih.gov/health/topics/caring-for-your-mental-health",
                 type: "article",
-                tags: ["wellbeing", "who5", "stress", "pss", "sleep", "insomnia", "isi", "anxiety", "gad7", "depression", "phq9"],
+                tags: ["wellbeing", "who5", "stress", "pess", "sleep", "insomnia", "isi", "anxiety", "gad7", "depression", "phq9"],
                 targetSeverity: "all"
             },
             {

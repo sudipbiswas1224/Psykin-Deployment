@@ -27,7 +27,7 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const theme = user?.preferences?.theme || "light";
+  const theme = user?.preferences?.theme === "light" ? "light" : "dark";
 
   // Sync/Fetch profile on application mount (if authenticated)
   useEffect(() => {
@@ -50,31 +50,10 @@ function App() {
   // Global Theme listener and application
   useEffect(() => {
     const root = document.documentElement;
-    const applyTheme = (currentTheme) => {
-      const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (
-        currentTheme === "dark" ||
-        (currentTheme === "auto" && systemPrefersDark)
-      ) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
-    };
-
-    applyTheme(theme);
-
-    if (theme === "auto") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const handleChange = (e) => {
-        if (e.matches) {
-          root.classList.add("dark");
-        } else {
-          root.classList.remove("dark");
-        }
-      };
-      mediaQuery.addEventListener("change", handleChange);
-      return () => mediaQuery.removeEventListener("change", handleChange);
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
     }
   }, [theme]);
 

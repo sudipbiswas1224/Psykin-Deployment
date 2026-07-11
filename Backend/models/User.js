@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   },
   preferences: {
     language: { type: String, default: 'en' },
-    theme: { type: String, enum: ['light', 'dark', 'auto'], default: 'auto' }
+    theme: { type: String, enum: ['light', 'dark'], default: 'dark' }
   },
   stats: {
     totalMessages: { type: Number, default: 0 },
