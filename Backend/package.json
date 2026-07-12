@@ -23,6 +23,8 @@
     "dependencies": {
         "@google/genai": "^2.10.0",
         "@pinecone-database/pinecone": "^8.0.0",
+        
+        "axios": "^1.18.0",
         "bcryptjs": "^3.0.2",
         "compression": "^1.8.0",
         "cors": "^2.8.6",
@@ -37,6 +39,8 @@
         "mongoose": "^8.16.1",
         "morgan": "^1.10.0",
         "nodemailer": "^9.0.3",
+        
+        "resend": "^6.17.2",
         "socket.io": "^4.8.3",
         "xss-clean": "^0.1.4"
     },
