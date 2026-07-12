@@ -1,53 +1,89 @@
 const nodemailer = require('nodemailer');
+const axios = require('axios');
 const logger = require('./logger');
 
 /**
- * Sends a real email using Nodemailer if SMTP configuration is present in the environment variables.
- * Otherwise, falls back to logging the simulated email to the console.
+ * Sends an email using one of three strategies (in priority order):
+ * 1. Brevo HTTP API   — works on Render/cloud, free 300 emails/day, any recipient
+ * 2. Nodemailer SMTP  — works locally with Gmail
+ * 3. Console simulation — fallback if nothing is configured
  */
 const sendEmail = async (options) => {
-  const { EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS, EMAIL_SECURE, EMAIL_FROM } = process.env;
+  const {
+    BREVO_API_KEY,
+    EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS, EMAIL_SECURE, EMAIL_FROM
+  } = process.env;
 
-  // Fallback to console simulation if SMTP config is missing
-  if (!EMAIL_HOST || !EMAIL_USER || !EMAIL_PASS) {
-    logger.warn('SMTP environment variables (EMAIL_HOST, EMAIL_USER, EMAIL_PASS) are not set. Falling back to console simulation.');
-    console.log('\n=================== ✉️ SIMULATED EMAIL ===================');
-    console.log(`To:      ${options.email}`);
-    console.log(`Subject: ${options.subject}`);
-    console.log('---------------------------- CONTENT ----------------------------');
-    console.log(options.message);
-    console.log('===========================================================\n');
-    return;
+  // === Strategy 1: Brevo HTTP API (recommended for production/Render) ===
+  if (BREVO_API_KEY) {
+    try {
+      const senderEmail = EMAIL_USER || 'noreply@psykin.com';
+      const senderName = 'Psykin Companion';
+
+      const response = await axios.post(
+        'https://api.brevo.com/v3/smtp/email',
+        {
+          sender: { name: senderName, email: senderEmail },
+          to: [{ email: options.email }],
+          subject: options.subject,
+          textContent: options.message
+        },
+        {
+          headers: {
+            'api-key': BREVO_API_KEY,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }
+      );
+
+      logger.info(`Email sent via Brevo to ${options.email}. Message ID: ${response.data.messageId}`);
+      return;
+    } catch (err) {
+      const errMsg = err.response?.data?.message || err.message;
+      logger.error(`Brevo send failed for ${options.email}: ${errMsg}`);
+      throw new Error(errMsg);
+    }
   }
 
-  // 1) Create an SMTP transporter
-  const transporter = nodemailer.createTransport({
-    host: EMAIL_HOST,
-    port: parseInt(EMAIL_PORT, 10) || 587,
-    secure: EMAIL_SECURE === 'true', // true for 465, false for other ports
-    auth: {
-      user: EMAIL_USER,
-      pass: EMAIL_PASS
-    },
-    family: 4 // Use IPv4 to avoid potential IPv6 issues
-  });
+  // === Strategy 2: Nodemailer SMTP (works locally with Gmail) ===
+  if (EMAIL_HOST && EMAIL_USER && EMAIL_PASS) {
+    const transporter = nodemailer.createTransport({
+      host: EMAIL_HOST,
+      port: parseInt(EMAIL_PORT, 10) || 587,
+      secure: EMAIL_SECURE === 'true',
+      auth: {
+        user: EMAIL_USER,
+        pass: EMAIL_PASS
+      },
+      family: 4
+    });
 
-  // 2) Define the mail configuration
-  const mailOptions = {
-    from: EMAIL_FROM || `"Psykin Companion" <${EMAIL_USER}>`,
-    to: options.email,
-    subject: options.subject,
-    text: options.message
-  };
+    const mailOptions = {
+      from: EMAIL_FROM || `"Psykin Companion" <${EMAIL_USER}>`,
+      to: options.email,
+      subject: options.subject,
+      text: options.message
+    };
 
-  // 3) Send the email
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    logger.info(`Email sent successfully to ${options.email}. Message ID: ${info.messageId}`);
-  } catch (err) {
-    logger.error(`Error sending email to ${options.email}:`, err.message);
-    throw err;
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      logger.info(`Email sent via SMTP to ${options.email}. Message ID: ${info.messageId}`);
+      return;
+    } catch (err) {
+      logger.error(`SMTP error for ${options.email}:`, err.message);
+      throw err;
+    }
   }
+
+  // === Strategy 3: Console simulation (no email config at all) ===
+  logger.warn('No email provider configured (BREVO_API_KEY or SMTP). Falling back to console simulation.');
+  console.log('\n=================== ✉️ SIMULATED EMAIL ===================');
+  console.log(`To:      ${options.email}`);
+  console.log(`Subject: ${options.subject}`);
+  console.log('---------------------------- CONTENT ----------------------------');
+  console.log(options.message);
+  console.log('===========================================================\n');
 };
 
 module.exports = sendEmail;
